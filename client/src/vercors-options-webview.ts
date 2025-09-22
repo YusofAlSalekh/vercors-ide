@@ -5,7 +5,7 @@ import { VerCorsPath } from "./vercors-paths-provider";
 
 export type OptionFields = flagType & pinnedType & backendType;
 
-enum backend { silicon = "--backend silicon", carbon = "--backend carbon"}
+enum backend { silicon = "silicon", carbon = "carbon"}
 
 type backendType = { backend: string };
 type pinnedType = { pinned: string[] };
@@ -13,7 +13,6 @@ type flagType = { flags: string[] };
 type Options = pinnedType & backendType & Record<string, flagType>;
 
 export class VerCorsOptions {
-
     public static getSelectedOptions(filePath: string): Array<string> {
         const selected = this.getFlagedOptions(filePath);
         selected.push(this.getBackendOption());
@@ -42,7 +41,7 @@ export class VerCorsOptions {
         currentVercorsOptions[filePath] = { flags: vercorsOptions.map(e => e.trim()) };
         currentVercorsOptions["backend"] = backendOption;
         currentVercorsOptions["pinned"] = pinnedOptions;
-        console.log({ file: filePath, ...currentVercorsOptions[filePath] });
+        //await vscode.workspace.getConfiguration().update('vercorsplugin.optionsMap', currentVercorsOptions[filePath] as any , true);
         await vscode.workspace.getConfiguration().update('vercorsplugin.optionsMap', currentVercorsOptions, true);
     }
 
@@ -141,7 +140,7 @@ export class VerCorsWebViewProvider implements webviewConnector {
         webviewView.webview.html = await this.getHtmlForWebview(webviewView.webview);
 
         // Handle messages from the webview
-        webviewView.webview.onDidReceiveMessage(async message => this.receiveMessage(message))
+        webviewView.webview.onDidReceiveMessage(async message => this.receiveMessage(message));
     }
 
     public async receiveMessage(message: any): Promise<void> {
